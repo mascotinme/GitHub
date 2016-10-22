@@ -1,0 +1,47 @@
+---
+title: 'DATA 605: Week 6'
+author: "MUSA T. GANIYU"
+date: "October 22, 2016"
+output: html_document
+---
+
+```{r}
+library(knitr)
+library(XML)
+library(jsonlite)
+library(plyr)
+
+```
+
+
+```{R, echo=FALSE}
+url.times <- ("http://api.nytimes.com/svc/politics/v3/us/legislative/congress/107-113/nominees/updated.xml?api-key=685874ff71bb286631a8ea2c3f9989bb:16:74820193")
+
+XML_doc   <- htmlParse(url.times)
+
+str(XML_doc)
+
+```
+
+
+
+```{r, echo=FALSE}
+
+#library(RKEA)
+#library(NLP)
+#library("tm")
+
+data("crude")
+keywords <- list(c("Diamond", "crude oil", "price"),
+                 c("OPEC", "oil", "price"),
+                 c("Texaco", "oil", "price", "decrease"),
+                  c("Marathon Petroleum", "crude", "decrease"),
+                  c("Houston Oil", "revenues", "decrease"),
+                  c("Kuwait", "OPEC", "quota"))
+ tmpdir <- tempfile()
+dir.create(tmpdir)
+model <- file.path(tmpdir, "crudeModel")
+createModel(crude[1:6], keywords, model)*/
+
+
+```

@@ -1,0 +1,109 @@
+---
+title: 'DATA 605: Assignment 2'
+author: "MUSA T. GANIYU"
+date: "September 5, 2016"
+output:
+  html_document:
+    highlight: pygments
+    theme: cerulean
+  pdf_document: default
+  tidy: yes
+  word_document: default
+---
+> Question 1.1:
+
++ Show that $A^TA\quad \neq \quad AA^T$ in general.
+
+
+* Solution:
+
+Let $A\quad =\quad \begin{matrix} a & b & c \\ d & e & f \\ g & h & i \end{matrix}$
+
+and $A^T\quad =\quad \begin{matrix} a & d & g \\ b & e & h \\ c & f & i \end{matrix}$
+
+
+$AA^T\quad =\quad \begin{matrix} a*a+b*b+c*c & d*a+e*b+f*c & g*a+h*b+i*c \\ a*d+b*e+c*f & d*d+e*e+f*f & g*d+h*e+i*f \\ a*g+b*h+c+i & d*g+h*e+i*f & g*g+h*h+i*i \end{matrix}$
+
+
+where $A^TA$ would not be equal to $AA^T$. Example below shows that $A^TA\quad \neq \quad AA^T$
+
+```{r}
+
+
+
+A <- matrix(c(1:9), nrow=3, byrow=T)
+A
+t(A)
+
+ATA <- A%*%t(A)
+
+AAT <- t(A)%*%A
+
+ATA
+AAT
+
+ATA==AAT
+
+```
+
+> Question 1.2
+
++ For a special type of square matrix $A^TA\quad = \quad AA^T$. Under what conditions could this be true?
+
+* Solution: 
+
+Consider the 2x2 identity matrix and matrix A2 below, we can deduce that the non-negative/zero of the resulting output make the matrix of  $A^TA\quad = \quad AA^T$ symmetric.
+i.e if $A^TA\quad = I$ and $\quad AA^T = I$, then they are consider to be equal or symmetric.
+
+```{R}
+I <- matrix(c(1,0,0,1), nrow = 2, byrow = T)
+I
+
+A2 <- matrix(c(3,2,2,3), nrow=2, byrow=T)
+A2
+
+ATA2 <- t(A2) %*% A2
+ATA2
+
+AAT2 <- A2 %*% t(A2)
+AAT2
+
+ATA2==AAT2
+
+```
+
+> Question 2: Write  an  R  function  to  factorize  a  square  matrix  A  into  LU  or  LDU,  whichever  you
+prefer
+
++ Solution:
+
+Let the above matrix be a square matrix i.e 3x3 (mxm) dimension, then its function is as follows:
+ 
+
+```{r}
+if (nrow(A) == 3) {
+
+  E21 <- -A[2,1] / A[1,1]
+  matrix_E21 <- matrix(c(1,0,0,E21,1,0,0,0,1), nrow=3, byrow = T)
+  A2 <- matrix_E21 %*% A
+  
+  E31 <- -A2[3,1] / A2[1,1]
+  matrix_E31 <- matrix(c(1,0,0,0,1,0,E31,0,1), nrow=3, byrow = T)
+  A3 <- matrix_E31 %*% A2
+  
+  E32 <- -A3[3,2] / A3[2,2]
+  matrix_E32 <- matrix(c(1,0,0,0,1,0,0,E32,1), nrow=3, byrow = T)
+  U <- matrix_E32 %*% A3
+ 
+  L <- solve(matrix_E21) %*% solve(matrix_E31) %*% solve(matrix_E32)
+
+  A <- L %*% U
+
+  print(A) # Matrix A.
+  print(L) # Lower Trangular Matrix.
+  print(U) #Upper Trangular Matrix.
+ 
+  #Testing
+  (L %*% U == A)}
+
+```

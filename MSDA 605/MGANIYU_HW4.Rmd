@@ -1,0 +1,147 @@
+---
+title: 'DATA 605: WEEK 4'
+author: "MUSA T. GANIYU"
+date: "October 18, 2016"
+output: html_document
+---
+
+Question 1.1
+
+write code in R to compute X = AAT and Y = ATA. 
+
+```{r}
+library(Matrix)
+library(Rcpp)
+
+A <- matrix(c(1,2,3,-1,0,4), nrow = 2, byrow = T)
+
+A
+
+X <- A%*%t(A)
+
+X
+
+
+
+Y <- t(A)%*%A
+
+Y
+```
+
+1.2
+
+Then, compute the eigenvalues and eigenvectors of X and Y using the built-in commans in R. 
+
+```{R}
+
+X_value <- eigen(X, only.values = FALSE, EISPACK = TRUE)$values
+X_value
+X_vectors <- eigen(X, only.values = FALSE, EISPACK = TRUE)$vectors
+X_vectors
+
+
+Y_value <- eigen(Y, only.values = FALSE, EISPACK = TRUE)$values
+Y_value
+
+Y_vectors <- eigen(Y, only.values = FALSE, EISPACK = TRUE)$vectors
+Y_vectors
+```
+
+Given a complex matrix A having m rows and n columns, if $\sigma$  is a nonnegative scalar, and u and v are
+nonzero m- and n-vectors, respectively, such that
+Av = $\sigma u$ and ${ A }^{ \ast  } = \sigma v$,
+then $\sigma$  is a singular value of A and u and v are corresponding left and right singular vectors, respectively.
+
+```{R}
+b <- svd(A)
+b
+d <- svd(A)$d
+d
+u <- svd(A)$u
+u
+v <- svd(A)$v
+v
+
+```
+
+The above right singular value of A(V) is thesame as the Eigen Vectors obtained earlier.
+
+
+```{R}
+#
+
+```
+
+Question 2:
+
+
+Using  the  procedure  outlined  in  section  1  of  the  weekly  handout,  write  a  function  to
+compute the inverse of a well-conditioned full-rank square matrix using co-factor.
+
+
+
+```{R}
+library(functional)
+
+myinverse <-  function(A) {
+  
+# Check for square maytrix or not 
+  if(length(unique(dim(A))) != 1){ 
+                           stop("Matrix is not square. Kindly provide a square matrix")
+                           return("Matrix is not square. Kindly provide a square matrix") 
+                          } 
+             else  
+# check for invertable matrix
+      if(det(A) == 0) {stop ("the determinant is zero. the matrix is not Invertable ") 
+                      return("the determinant is zero. the matrix is not Invertable ")
+                      }
+        else {
+# Initializing the Coefficient  
+     C <- diag(0,nrow(A), ncol(A))
+  
+
+     for(i in 1:nrow(A)) {
+       for(j in 1:ncol(A)){
+          C[i, j] <- (-1)^(i+j) * det(A[-i, -j])
+          }
+     }
+  
+      return((t(C) / det(A)))
+    }
+}
+
+
+```
+
+Your function should have the following signature: B = myinverse(A)
+
+```{R}
+# Tesing for for zero deternimant
+A <- matrix(c(1,0,-1,0,1,0,-1,0,1), nrow=3, ncol=3, byrow=TRUE)
+A
+
+
+B <- round(myinverse(A),2)
+B
+
+A<- matrix(c(1,2,3,4,9,6,7,8),nrow=4, ncol=2, byrow=TRUE)
+A
+
+B <- round(myinverse(A),2)
+B
+
+
+set.seed(100)
+A <- matrix(sample(0:20, 16, replace=TRUE),byrow=T, nrow =4)
+A
+
+
+B <- round(myinverse(A),2)
+B
+
+
+
+# Testing if A%*%B = I. 
+round(A%*%B,1)
+```
+

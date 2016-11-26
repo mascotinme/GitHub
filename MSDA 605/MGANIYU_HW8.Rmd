@@ -1,0 +1,112 @@
+---
+title: "IS 605 FUNDAMENTALS OF COMPUTATIONAL MATHEMATICS - WEEK 8\n|
+  \ Data Analytics  \n"
+author: "Author:MUSA T GANIYU"
+output:
+  html_document:
+    highlight: tango
+    theme: cerulean
+    toc: yes
+    toc_depth: 2
+    toc_float:
+      collapsed: yes
+      number_sections: yes
+      smooth_scroll: no
+  pdf_document:
+    toc: yes
+    toc_depth: '2'
+---
+
+> 
+
+Question 1:
+
+Your  colleague  either  commutes  by  train  or  by  the  bus.   20  days  of  the  month, she takes the train and the remaining 10 days she takes the bus. If she takes the train, she reaches work on time with a probability of 0.9. If she takes the bus, she frequently gets stuck in traffic and reaches work on time with a probability of 0.5. Given that she was on time today, what is the probability that she took the bus to work today?
+
+Recall:
+
+$Pr(A|B)\quad =\frac { Pr(B|A).Pr(A) }{ Pr(B) } \quad =\quad \frac { Pr(B|A).Pr(A) }{ Pr(B|A).Pr(A)\quad +\quad Pr(B|A\prime ).Pr(A\prime ) }$
+
+Where 
+Pr(Train 20 days in a month)= 20/30 = 0.6667i.e total number of days in a month.
+
+Pr(Bus 20 days in a month) = 10/30 = 0.3333
+
+Pr(Train on time) = 0.9000, Pr(Train not on time) = 0.1000
+
+Pr(Bus on time) = 0.5, Pr(Bus not on time) = 0.5
+
+Therefore, 
+```{R}
+Prob_Train_on_time_for_20days <- 0.6667 * 0.9000 
+ 
+Prob_Bus_on_time_for_10days <-  0.3333*0.5
+
+# While
+
+Prob_not_Train_on_time_for_20days <- 0.6667 * 0.1000
+
+Prob_not_Bus_on_time_for_10days <-  0.3333*0.5
+
+
+Prob_of_bus_to_work_on_time_today <- (Prob_Bus_on_time_for_10days) / (Prob_Bus_on_time_for_10days + Prob_Train_on_time_for_20days) 
+Prob_of_bus_to_work_on_time_today 
+
+
+# Or
+suppressWarnings(suppressMessages(require(LaplacesDemon)))
+
+PrA <- c(0.9000,0.5000)
+PrBA <- c(0.6667, 0.3333)
+BayesTheorem(PrA, PrBA)
+```
+
+> Question 2:
+
+In the Grade Network that we looked at in the notes.......You should use the
+gRain package in R to build your network and perform these calculations.  You may need to install RBGL package from BioConductor in R to get gRain working.
+
+```{R}
+suppressWarnings(suppressMessages(require(gRain)))
+suppressWarnings(suppressMessages(library(Rgraphviz)))
+
+
+ny <- c("no", "yes")
+lh <- c("low", "high")
+d <- cptable(~Difficulty, values=c(0.3,0.7), levels = ny)
+i <- cptable(~Intelligence, values = c(0.8, 0.2), levels = lh)
+s.i <- cptable(~SAT|Intelligence, values = c(0.9,0.1,0.2,0.8), levels = lh)
+g.di <- cptable(~Grade|Difficulty:Intelligence, values=c(0.6,0.4,0.8,0.2,0.1,0.99,0.1,0.9), levels = lh)
+l.g <- cptable(~Letter|Grade, values=c(0.9,0.1,0.5,0.95), levels = lh)
+
+plist <- compileCPT(list(d, i, s.i, g.di, l.g))
+
+pn <- grain(plist)
+plot(pn)
+
+```
+
+
+> Question 2.1:
+
+What happens to the probability of Diffculty of Course when you present the evidence that the received recommendation letter was good?
+
+```{R}
+Letter.f <- setFinding(pn, nodes = c("Letter"), states=c("High"))
+(querygrain(Letter.f, nodes=c("Difficulty"), type="marginal"))
+
+```
+
+From the above, we can deduce that the probability of the receiving a good letter of recommendation provided that the Difficulty of course is 70 percent, while non-evident of recommendation letter receipt (otherwise) is 30 Percent
+
+> Question 2.2:
+
+In addition, now present the evidence that both SAT scores were good and the letter of recommendation was good, What is the probability of the Diffculty of Course now?
+
+```{R}
+SAT.f <- setFinding(Letter.f, nodes=c("SAT"), states=c("High"))
+(querygrain(SAT.f, nodes=c("Difficulty"), type="marginal"))
+
+```
+
+It further revealed that both SAT scores and Letter of recommendation were good, with the probability of Difficulty of course still at 70 percent.

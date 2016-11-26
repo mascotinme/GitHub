@@ -1,0 +1,125 @@
+---
+title: "IS 605 FUNDAMENTALS OF COMPUTATIONAL MATHEMATICS - WEEK 9\n|
+  \ Data Analysis  \n"
+author: "Author:MUSA T GANIYU"
+output:
+  html_document:
+    highlight: tango
+    theme: cerulean
+    toc: yes
+    toc_depth: 2
+    toc_float:
+      collapsed: yes
+      number_sections: yes
+      smooth_scroll: no
+  pdf_document:
+    toc: yes
+    toc_depth: '2'
+---
+> Question 1: 
+
+First write a function that will produce a sample of random variable that is dis-
+tributed as follows:
+
+
+$f(x)\quad =\quad x,\quad 0\quad \le \quad x\quad \le \quad 1$
+     
+$f(x)\quad =\quad 2\quad -\quad x,\quad 1<\quad x\quad \le \quad 2$
+
+
+That is, when your function is called, it will return a random variable between 0
+and 2 that is distributed according to the above PDF.
+
+```{r}
+
+x <- function(x)(x)
+integrate(x, 0, 1)
+
+
+```
+
+
+
+```{R}
+x2 <- function(x)(2 - x)
+integrate(x2, 1.5, 2)
+
+```
+
+Now, write a function that will produce a sample of random variable that is dis-
+tributed as follows:
+
+$f(x)\quad =\quad 1- x,\quad 0\quad \le \quad x\quad \le \quad 1$
+     
+$f(x)\quad =\quad x - 1,\quad 1<\quad x\quad \le \quad 2$
+
+```{R}
+#x3 <- function(x)(1-x)
+x3 <- seq(0,1, by = 0.01) 
+x3
+plot(1-x3, x3)
+```
+
+
+```{R}
+x4 <- seq(1,2, by = 0.01) 
+x4
+plot(x4 - 1, x4)
+
+```
+
+> Question 3: 
+
+Draw 1000 samples (call your function 1000 times each) from each of the above two
+distributions and plot the resulting histograms.  You should have one histogram for
+each PDF. See that it matches your understanding of these PDFs.
+
+
+```{R}
+suppressWarnings(library(mc2d))
+par(mfrow=c(2,2))
+a = rtriang(1000, min = 0, mode = 1, max = 2)
+hist(a)
+
+
+par(mfrow=c(1, 1))
+b <- rtriang(500, min=0, mode=0,max= 1)
+c <- rtriang(500, min=1, mode=2, max=2)
+d <- c(b,c)
+hist(d)
+
+
+```
+
+> Question 4:
+
+Now, write a program that will take a sample set size n
+as a parameter and the PDF as the second parameter, and perform 1000 iterations where it samples from the PDF, each time taking n samples and computes the mean of these n samples.It then plots a histogram of these 1000 means that it computes.
+
+
+```{R}
+funct = function(x, y){
+  f = rep(0, 1000)
+  for (j in 1:1000){
+    funct2 = sample(y, x, replace = T)
+    f[j] = mean(funct2)
+  }
+   means = sum(f)/1000
+   hist(f)
+   return(means)
+}
+
+```
+
+
+```{R}
+funct(1, d)
+funct(3, d)
+funct(4, d)
+funct(5, d)
+funct(10, d)
+funct(20, d)
+funct(200, d)
+funct(500, d)
+funct(1000, d)
+```

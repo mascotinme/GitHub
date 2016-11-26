@@ -1,0 +1,242 @@
+---
+title: "|IS 605 FUNDAMENTALS OF COMPUTATIONAL MATHEMATICS - WEEK 11\n|
+  \ Data Analysis  \n"
+author: "Author:MUSA T GANIYU"
+output:
+  html_document:
+    highlight: tango
+    theme: cerulean
+    toc: yes
+    toc_depth: 2
+    toc_float:
+      collapsed: yes
+      number_sections: yes
+      smooth_scroll: no
+  pdf_document:
+    toc: yes
+    toc_depth: '2'
+---
+
+
+> Question 1: Using R's lm function, perform regression analysis and measure the significance of the independent variables for the following two data sets. In the first case, you are evaluating the statement that we hear that Maximum Heart Rate of a person is related to their age by the following equation:
+
++ MaxHR = 220 - Age
+
+
+
+```{r}
+
+options(warn = -1)
+suppressMessages(library(ggplot2))
+suppressMessages(library(plotly))
+library(knitr)
+
+dataset <- data.frame( age = c(18, 23, 25, 35, 65, 54, 34, 56, 72, 19, 23, 42, 18, 39, 37), maxHR = c(202, 186, 187, 180, 156, 169, 174, 172, 153, 199, 193, 174, 198, 183, 178))
+str(dataset)
+
+```
+
+
+SETTING UP HYPOTHESIS:
+
++ Null Hypothesis: The population parameters(means) are the same
+
+${ H }_{ 0 }\quad :\quad { \mu  }_{ 1 }=\quad { \mu  }_{ 2 }\quad ={ \quad \mu  }_{ 3 }............={ \mu  }_{ n }$
+
++ Alternative Hypothesis: Not ${ H }_{ 0 }\quad$
+
+${ H }_{ 1 }\quad :\quad { \mu  }_{ 1 }\not=\quad { \mu  }_{ 2 }\quad\not ={ \quad \mu  }_{ 3 }............\not={ \mu  }_{ n }$
+
+
+> Rejection: 
+
+Rejection ${ H }_{ 0 }$ if the calculated value (P-Value) is less the tabulated value(Table Value = 0.05) i.e P $\le \quad \alpha$, at 0.05, otherwise do not reject ${ H }_{ 0 }\quad$.
+
+```{R}
+
+
+plot(dataset$age, dataset$maxHR, main = "Scatter Plot", xlab = "Age", ylab = "MAx HR")
+abline(lm(dataset$maxHR~dataset$age), col="blue")
+```
+
+Above is the plot of Age against maxHR, and it reveals that there is a strong negative correlation between Age and MaxHR. Where its correlation co-efficient is stated below;
+
+```{R}
+
+cor(dataset$maxHR, dataset$age)
+```
+
+
+Below is the linear model between Age and MaxHR with the plot of Residual against the fitted values.
+
+```{R}
+
+linearmodel <- lm(dataset$maxHR~dataset$age)
+
+summary(linearmodel)
+```
+
+selecting best model using both Forward and backward selection
+
+```{R}
+
+stepwise <- step(linearmodel, direction = "both")
+summary(stepwise)
+
+kable(confint(stepwise))
+
+```
+
+Plot of fitted values and showing relationship between Age and MaxHR 
+
+```{R}
+
+residual_age = data.frame(Fitted = fitted(stepwise),
+Residuals = resid(stepwise), Treatment = dataset$age)
+
+ggplot(residual_age, aes(Fitted, Residuals, colour = Treatment)) + geom_point()
+```
+
+
+> Decision and Conclusion:
+
+
+Since P-value is less than the tabulated value, we therefore fail to accept (reject) ${ H }_{ 0 }$, and conclude that the is no statistically significant relationship between Age and MaxHR, i.e there population means are not the same.
+
+
+
+
+> Question 2:
+
+Using the Auto data set from Assignment 5 (also attached here) perform a Linear Re-
+gression analysis using mpg as the dependent variable and the other 4 (displacement, horse-
+power, weight, acceleration) as independent variables. What is the final linear regression fit
+equation? Which of the 4 independent variables have a significant impact on mpg? What
+are their corresponding significance levels? What are the standard errors on each of the
+coeficients? Please perform this experiment in two ways. First take any random 40 data
+points from the entire auto data sample and perform the linear regression fit and measure
+the 95% confidence intervals. Then, take the entire data set (all 392 points) and perform
+linear regression and measure the 95% confidence intervals. Please report the resulting fit
+equation, their significance values and confidence intervals for each of the two runs.
+Please submit an R-markdown file documenting your experiments. Your submission
+should include the final linear fits, and their corresponding signifcance levels. In addition,
+you should clearly state what you concluded from looking at the fit and their significance
+levels.
+1
+
+
+
+
+```{r}
+
+auto <- read.csv("C:\\Users\\mascot\\Desktop\\assign11\\assign11\\auto-mpg.txt", header=FALSE, sep = "")
+
+colnames(auto)[1] <- "mpg"
+colnames(auto)[2] <- "displacement"
+colnames(auto)[3] <- "horsePower"
+colnames(auto)[4] <-  "weight"
+colnames(auto)[5] <- "acceleration"
+
+kable(head(auto))
+```
+
+```{R}
+set.seed(123)
+sample1 <- auto[sample(nrow(auto),40 ), ]
+dim(sample1)
+
+```
+
+
+SETTING UP HYPOTHESIS:
+
++ Null Hypothesis: The population parameters(means) are the same
+
+${ H }_{ 0 }\quad :\quad { \mu  }_{ 1 }=\quad { \mu  }_{ 2 }\quad ={ \quad \mu  }_{ 3 }............={ \mu  }_{ n }$
+
++ Alternative Hypothesis: Not ${ H }_{ 0 }\quad$
+
+${ H }_{ 1 }\quad :\quad { \mu  }_{ 1 }\not=\quad { \mu  }_{ 2 }\quad\not ={ \quad \mu  }_{ 3 }............\not={ \mu  }_{ n }$
+
+
+> Rejection: 
+
+Rejection ${ H }_{ 0 }$ if the calculated value (P-Value) is less the tabulated value(Table Value = 0.05) i.e P $\le \quad \alpha$, at 0.05, otherwise do not reject ${ H }_{ 0 }\quad$.
+
+```{R}
+auto_40 <- lm(mpg ~ (displacement+weight+acceleration+horsePower), data=sample1 )
+
+summary(auto_40)
+
+stepwise2 <- step(auto_40, direction = "backward")
+
+summary(stepwise2)
+
+```
+
+
+
+From the above linear regression and best model selection (using backward selection method), we can deduce that only "displacement" and "horsePower" would be select as the best model for further analysis.
+
+Thus the equation;
+
+> mpg = -152.03412 + 0.86854*displacement + 0.08524*horsePower + e
+
+where e is the error term.
+
+
+```{R}
+
+confint(stepwise2)
+
+#Note that the confidence intervals below are non-zero.
+```
+
+
+
+Below is the linear regression model for all the 392 observations and selection of the best model using backward selection method.
+
+```{R}
+
+auto_392 <- lm(mpg~displacement+horsePower+weight+acceleration, data=auto)
+summary(auto_392)
+
+
+stepwise3 <- step(auto_392, direction = "backward")
+
+summary(stepwise3)
+```
+
+From the above, it can deduce that the following variables have less P-values;
+
+displacements
+horsePower
+weight
+
+and the best formular or model is;
+
+> mpg = -71.1817 + 0.6479xdisplacement + 0.0848x horsePower - 3.5132xweight + e
+ 
+
+where e is the error term or residual which is 32.13
+
+```{R}
+kable(confint(stepwise3))
+# Non-zero confidence intervals.
+```
+
+```{R}
+residual_mpg = data.frame(Fitted = fitted(stepwise3),
+Residuals = resid(stepwise3), Treatment = auto$mpg)
+#fitted with mpg
+
+ggplot(residual_mpg, aes(Fitted, Residuals, colour = Treatment)) + geom_point()
+
+```
+
+
+
+> Decision and Conclusion: 
+
+Since p-value for all the three variables (displacement, horsePower and weight) are lesser than the tabulated value of 0.05, we therefore fail to accept (reject) ${ H }_{ 0 }\quad$ and conclude that they do not have thesame means. Or that the relationship between the mpg and other variables is statistically insignificance.  
+

@@ -1,0 +1,12 @@
+---
+title: 'DATA 605: ASSIGNMENT 10'
+author: "MUSA T. GANIYU"
+date: "November 22, 2016"
+output: html_document
+---
+
+```{R}
+age <- c(18, 23, 25, 35, 65, 54, 34, 56, 72, 19, 23, 42, 18, 39, 37)
+
+
+```

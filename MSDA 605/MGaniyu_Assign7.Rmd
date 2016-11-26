@@ -1,0 +1,77 @@
+---
+title: "IS 605 FUNDAMENTALS OF COMPUTATIONAL MATHEMATICS - WEEK 7\n|
+  \ Data Analysis  \n"
+author: "Author:MUSA T GANIYU"
+output:
+  html_document:
+    highlight: tango
+    theme: cerulean
+    toc: yes
+    toc_depth: 2
+    toc_float:
+      collapsed: yes
+      number_sections: yes
+      smooth_scroll: no
+  pdf_document:
+    toc: yes
+    toc_depth: '2'
+---
+
+>  Please write a function to compute the expected value and standard deviation of an array of values.
+
+```{r}
+
+num <- c(2,4,5,6,7,8,5,6,7,6,7,8,8,9,4,9)
+
+expectedValue <- function(num){
+  return(sum(num)/length(num))
+}
+
+mean(num) == expectedValue(num)# Checking
+
+
+
+standardDeviation <- function(num){
+  return(sqrt(sum((num-expectedValue(num))^2)/(length(num)-1)))
+}
+
+sd(num) == standardDeviation(num) #Checking
+
+```
+```{python}
+import numpy
+```
+
+ > Now, consider that instead of being able to neatly  t the values in memory in an array,
+you have an in nite stream of numbers coming by.  How would you estimate the mean and
+standard deviation of such a stream?  Your function should be able to return the current
+estimate of the mean and standard deviation at any time it is asked.  Your program should
+maintain these current estimates and return them back at any invocation of these functions.
+
+```{R}
+ 
+rolling<<-NA
+
+    
+rollingfunc <- function(x) {
+   
+ 
+   if (is.na(rolling[1]) == TRUE) rolling<<- rolling[-1]
+  
+ 
+    rolling<<- c(rolling, assign("rolling", x, envir = .GlobalEnv))
+    
+
+   print(data.frame(rolling))
+   
+ 
+  return(data.frame(mean = expectedValue(rolling), std = standardDeviation(rolling) ))
+}
+
+
+ 
+vector <- rnorm(n = 50000, mean = 250, sd = 4.5 )
+
+rollingfunc(vector)
+
+```

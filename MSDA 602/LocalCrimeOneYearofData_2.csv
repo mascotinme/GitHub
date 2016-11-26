@@ -1,4 +1,4 @@
-Agency,State,Months,Population,Violent crime total,Murder and nonnegligent Manslaughter,Forcible rape,Robbery,Aggravated assault,Property crime total,Burglary,Larceny-theft,Motor vehicle theft,lat,long
+Agency,State,Months,Population,Violent_crime_total,Murder_and_Manslaughter,Forcible_rape,Robbery,Aggravated_assault,Property_crime_total,Burglary,Larceny_theft,Motor_vehicle_theft,lat,long
 Abilene Police Dept,TX,12,119886,472,3,38,127,304,4393,1037,3185,171,32.4887,99.7331
 Akron City Police Dept,OH,12,198390,1759,24,167,577,991,10034,3429,5884,721,41.0814,81.519
 Alexandria Police Dept,VA,12,145892,243,0,9,138,96,2990,281,2383,326,38.8048,77.0469
